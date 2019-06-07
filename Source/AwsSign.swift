@@ -20,7 +20,7 @@ public extension URLRequest {
         return (full: date, short: String(shortDate))
     }
 
-    public mutating func sign(accessKeyId: String, secretAccessKey: String) throws {
+    mutating func sign(accessKeyId: String, secretAccessKey: String) throws {
         guard let url = url, let host = url.host, let method = httpMethod else { throw SignError.generalError(reason: "URLRequest doesn't have a proper URL") }
         let hostComponents = host.components(separatedBy: ".")
         guard hostComponents.count > 2 else { throw SignError.generalError(reason: "Incorrect host format. The host should contain service name and optional region, e.g sns.us-east-1.amazonaws.com or iam.amazonaws.com") }
