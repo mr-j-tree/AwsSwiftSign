@@ -23,10 +23,15 @@ public extension URLRequest {
     public mutating func sign(accessKeyId: String, secretAccessKey: String) throws {
         guard let url = url, let host = url.host, let method = httpMethod else { throw SignError.generalError(reason: "URLRequest doesn't have a proper URL") }
         let hostComponents = host.components(separatedBy: ".")
-        guard hostComponents.count > 3 else { throw SignError.generalError(reason: "Incorrect host format. The host should contain service name and region, e.g sns.us-east-1.amazonaws.com") }
+        guard hostComponents.count > 2 else { throw SignError.generalError(reason: "Incorrect host format. The host should contain service name and optional region, e.g sns.us-east-1.amazonaws.com or iam.amazonaws.com") }
 
         let serviceName = hostComponents[0]
-        let awsRegion = hostComponents[1]
+        let awsRegion:String
+        if hostComponents.count > 3 {
+            awsRegion = hostComponents[1]
+        } else {
+            awsRegion = "us-east-1"
+        }
 
         var body = ""
         if let bodyData = httpBody, let bodyString = String(data: bodyData, encoding: .utf8) {
